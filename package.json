@@ -1,0 +1,20 @@
+{
+  "name": "react-study",
+  "version": "1.0.0",
+  "description": "some examples to learning React",
+  "private": true,
+  "author": "yobol",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/yobol/react-study",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yobol/react-study"
+  },
+  "workspaces": [
+    "w001-tic-tac-toe"
+  ],
+  "scripts": {
+    "build:w001-tic-tac-toe": "yarn workspace w001-tic-tac-toe run build",
+    "start:w001-tic-tac-toe": "yarn workspace w001-tic-tac-toe run start"
+  }
+}
