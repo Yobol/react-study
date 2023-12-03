@@ -34,7 +34,7 @@ export default function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
 
   function handleSquareClick(i) {
-    if (squares[i]) {
+    if (squares[i] || calculateWinner(squares)) {
       return;
     }
 
@@ -51,11 +51,20 @@ export default function Board() {
     setXIsNext(!xIsNext);
   }
 
+  const winner = calculateWinner(squares);
+  let status;
+  if (winner) {
+    status = "Winner: " + winner;
+  } else {
+    status = "Next player: " + (xIsNext ? "X" : "0");
+  }
+
   // <button> is a JSX element.
   // A JSX element is a combination of JavaScript code and HTML tags that describes what you’d like to display. 
   // We must using an enclosing tag '(<></>)' to wrapper multiple adjacent JSX elements as following.
   return (
     <>
+      <div className="status">{status}</div>
       <div className="board-row">
         {/*
           Can't directly use '<Square value={squares[0]} onSquareClick={handleSquareClick(0)} />'.
@@ -83,4 +92,25 @@ export default function Board() {
       </div>
     </>
   );
+}
+
+// Forbid you from scrolling past it every time you edit your components.
+function calculateWinner(squares) {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 5],
+    [2, 4, 6],
+  ]
+  for (let line of lines) {
+    const [a, b, c] = line;
+    if (squares[a] && squares[a] == squares[b] && squares[a] == squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
 }
