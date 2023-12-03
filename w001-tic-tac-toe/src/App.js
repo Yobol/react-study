@@ -21,6 +21,7 @@ function Square({ value, onSquareClick }) {
 // The default is a JavaScript keyword tells other files using your code that it's the main function in your file.
 // So we can using <App /> to replace <Board />.
 export default function Board() {
+  const [xIsNext, setXIsNext] = useState(true);
   // Using immutability's serveral benefits:
   // 1. implement easily undo & redo actions to keep previous versions of the data intact, and reuse them later;
   // 2. makes it very cheap for components to compare whether their data has changed or not
@@ -33,12 +34,21 @@ export default function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
 
   function handleSquareClick(i) {
+    if (squares[i]) {
+      return;
+    }
+
     const nextSquares = squares.slice();
-    nextSquares[i] = 'X';
+    if (xIsNext) {
+      nextSquares[i] = 'X';
+    } else {
+      nextSquares[i] = 'O';
+    }
     // Calling the setSquares functions lets React to know the state of the component has changed.
     // This will trigger a re-render of the components that use the squares state (the Board component) as well as
     // its child components (the Square components that make up the board).
     setSquares(nextSquares);
+    setXIsNext(!xIsNext);
   }
 
   // <button> is a JSX element.
