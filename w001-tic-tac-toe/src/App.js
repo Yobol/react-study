@@ -21,6 +21,10 @@ function Square({ value, onSquareClick }) {
 // The default is a JavaScript keyword tells other files using your code that it's the main function in your file.
 // So we can using <App /> to replace <Board />.
 export default function Board() {
+  // Using immutability's serveral benefits:
+  // 1. implement easily undo & redo actions to keep previous versions of the data intact, and reuse them later;
+  // 2. makes it very cheap for components to compare whether their data has changed or not
+
   // To collect data from multiple children, or to have two child components communicate with each other, 
   // declare the shared state in their parent component instead. The parent component can pass that state back down 
   // to the children via props. This keeps the child components in sync with each other and with their parent.
