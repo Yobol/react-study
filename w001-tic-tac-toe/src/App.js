@@ -31,12 +31,6 @@ function Board({ xIsNext, squares, onPlay }) {
       nextSquares[i] = 'O';
     }
     onPlay(nextSquares);
-
-    // Calling the setSquares functions lets React to know the state of the component has changed.
-    // This will trigger a re-render of the components that use the squares state (the Board component) as well as
-    // its child components (the Square components that make up the board).
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
   }
 
   const winner = calculateWinner(squares);
@@ -121,9 +115,32 @@ export default function Game() {
   const currentSquares = history[history.length - 1];
 
   function handlePlay(nextSquares) {
+    // Calling the setSquares functions lets React to know the state of the component has changed.
+    // This will trigger a re-render of the components that use the squares state (the Board component) as well as
+    // its child components (the Square components that make up the board).
     setHistory([...history, nextSquares]);
     setXIsNext(!xIsNext);
   }
+
+  function jumpTo(nextMove) {
+    //TODO
+  }
+
+  // In JavaScript, to transform one array into another, you can use the array map method:
+  // map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): U[];
+  const moves = history.map((squares, move) => {
+    let description;
+    if (move > 0) {
+      description = 'Go to move #' + move;
+    } else {
+      description = 'Go to game start';
+    }
+    return (
+      <li>
+        <button onClick={() => jumpTo(move)}>{description}</button>
+      </li>
+    );
+  });
 
   return (
     <div className="game">
@@ -131,7 +148,7 @@ export default function Game() {
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        <ol>{/*TODO*/}</ol>
+        <ol>{moves}</ol>
       </div>
     </div>
   )
