@@ -41,37 +41,36 @@ function Board({ xIsNext, squares, onPlay }) {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
 
+  const renderSquare = (i) => {
+    /*
+      Can't directly use '<Square value={squares[0]} onSquareClick={handleSquareClick(0)} />'.
+      Because the 'handleSquareClick(0)' alters the state of the Board components by calling 'setSquares'.
+      It will re-render the Square component to call the 'handleSquareClick(0)' again, 
+      leading to an infinite looooooooooooooooooooooooooooooooooooooooooooooooooop!
+
+      Note:
+        onSquareClick={handleSquareClick} doesn't call the function.
+        onSquareClick={handleSquareClick(0)} will call the function right now.
+    */
+    return <Square value={squares[i]} onSquareClick={() => handleSquareClick(i)} />
+  }
+
+  let boardRows = [];
+  for (let i = 0; i < 3; i++) {
+    let squaresInRow = [];
+    for (let j = 0; j < 3; j++) {
+      squaresInRow.push(renderSquare(i * 3 + j));
+    }
+    boardRows.push(<div className='borad-row'>{squaresInRow}</div>)
+  }
+
   // <button> is a JSX element.
   // A JSX element is a combination of JavaScript code and HTML tags that describes what you’d like to display. 
   // We must using an enclosing tag '(<></>)' to wrapper multiple adjacent JSX elements as following.
   return (
     <>
-      <div className="status">{status}</div>
-      <div className="board-row">
-        {/*
-          Can't directly use '<Square value={squares[0]} onSquareClick={handleSquareClick(0)} />'.
-          Because the 'handleSquareClick(0)' alters the state of the Board components by calling 'setSquares'.
-          It will re-render the Square component to call the 'handleSquareClick(0)' again, 
-          leading to an infinite looooooooooooooooooooooooooooooooooooooooooooooooooop!
-
-          Note:
-            onSquareClick={handleSquareClick} doesn't call the function.
-            onSquareClick={handleSquareClick(0)} will call the function right now.
-        */}
-        <Square value={squares[0]} onSquareClick={() => handleSquareClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleSquareClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleSquareClick(2)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleSquareClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleSquareClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleSquareClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleSquareClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleSquareClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleSquareClick(8)} />
-      </div>
+      <div className='status'>{status}</div>
+      {boardRows}
     </>
   );
 }
