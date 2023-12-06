@@ -30,7 +30,8 @@ function Board({ xIsNext, move, squares, onPlay }) {
     } else {
       nextSquares[i] = 'O';
     }
-    onPlay(nextSquares);
+    const nextStep = [(i - i % 3) / 3 + 1, i % 3 + 1];
+    onPlay(nextSquares, nextStep);
   }
 
   const winner = calculateWinner(squares);
@@ -118,19 +119,23 @@ export default function Game() {
   // Array(9).fill(null) creates an array with nine elements and sets each of them to null.
   // Besides, state is private to a component that defines it. So we cannot update the Board’s state directly from Square.
   const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [stepHistory, setStepHistory] = useState([Array(2).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
   // There’s no reason for you to store both of these in state. In fact, always try to avoid redundant state.
   // Simplifying what you store in state reduces bugs and makes your code easier to understand.
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
-  function handlePlay(nextSquares) {
+  function handlePlay(nextSquares, nextStep) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
-    // Calling the setSquares functions lets React to know the state of the component has changed.
+    const nextStepHistory = [...stepHistory.slice(0, currentMove + 1), nextStep];
+
+    // Calling the function lets React to know the state of the component has changed.
     // This will trigger a re-render of the components that use the squares state (the Board component) as well as
     // its child components (the Square components that make up the board).
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
+    setStepHistory(nextStepHistory);
   }
 
   function jumpTo(nextMove) {
@@ -139,24 +144,29 @@ export default function Game() {
 
   function toggleSortingMoves() {
     setAscending(!ascending);
-    console.log(ascending);
   }
 
   // In JavaScript, to transform one array into another, you can use the array map method:
   // map<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): U[];
   const moves = history.map((squares, move) => {
-    let description;
-    if (move > 0) {
-      description = 'Go to move #' + move;
+    let step;
+    if (stepHistory[move][0]) {
+      step = ' (' + stepHistory[move][0] + ', ' + stepHistory[move][1] + ')';
     } else {
-      description = 'Go to game start';
+      step = '';
     }
 
-    if (move == currentMove) {
-      description = 'You are at move #' + move;
-      return (
-        <li key={move}>{description}</li>
-      )
+    let description;
+    if (move > 0) {
+      if (move == currentMove) {
+        description = 'You are at move #' + move + step;
+        return (
+          <li key={move}>{description}</li>
+        )
+      }
+      description = 'Go to move #' + move + step;
+    } else {
+      description = 'Go to game start';
     }
 
     return (
