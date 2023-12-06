@@ -18,23 +18,9 @@ function Square({ value, onSquareClick }) {
     )
 }
 
-// The default is a JavaScript keyword tells other files using your code that it's the main function in your file.
-// So we can using <App /> to replace <Board />.
-export default function Board() {
-  const [xIsNext, setXIsNext] = useState(true);
-  // Using immutability's serveral benefits:
-  // 1. implement easily undo & redo actions to keep previous versions of the data intact, and reuse them later;
-  // 2. makes it very cheap for components to compare whether their data has changed or not
-
-  // To collect data from multiple children, or to have two child components communicate with each other, 
-  // declare the shared state in their parent component instead. The parent component can pass that state back down 
-  // to the children via props. This keeps the child components in sync with each other and with their parent.
-  // Array(9).fill(null) creates an array with nine elements and sets each of them to null.
-  // Besides, state is private to a component that defines it. So we cannot update the Board’s state directly from Square.
-  const [squares, setSquares] = useState(Array(9).fill(null));
-
+function Board({ xIsNext, squares, onPlay }) {
   function handleSquareClick(i) {
-    if (squares[i] || calculateWinner(squares)) {
+    if (calculateWinner(squares) || squares[i]) {
       return;
     }
 
@@ -44,6 +30,8 @@ export default function Board() {
     } else {
       nextSquares[i] = 'O';
     }
+    onPlay(nextSquares);
+
     // Calling the setSquares functions lets React to know the state of the component has changed.
     // This will trigger a re-render of the components that use the squares state (the Board component) as well as
     // its child components (the Square components that make up the board).
@@ -56,7 +44,7 @@ export default function Board() {
   if (winner) {
     status = "Winner: " + winner;
   } else {
-    status = "Next player: " + (xIsNext ? "X" : "0");
+    status = "Next player: " + (xIsNext ? "X" : "O");
   }
 
   // <button> is a JSX element.
@@ -113,4 +101,38 @@ function calculateWinner(squares) {
     }
   }
   return null;
+}
+
+// The default is a JavaScript keyword tells other files using your code that it's the main function in your file.
+// So we can using <App /> to replace <Game />.
+export default function Game() {
+  const [xIsNext, setXIsNext] = useState(true);
+
+  // Using immutability's serveral benefits:
+  // 1. implement easily undo & redo actions to keep previous versions of the data intact, and reuse them later;
+  // 2. makes it very cheap for components to compare whether their data has changed or not
+
+  // To collect data from multiple children, or to have two child components communicate with each other, 
+  // declare the shared state in their parent component instead. The parent component can pass that state back down 
+  // to the children via props. This keeps the child components in sync with each other and with their parent.
+  // Array(9).fill(null) creates an array with nine elements and sets each of them to null.
+  // Besides, state is private to a component that defines it. So we cannot update the Board’s state directly from Square.
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const currentSquares = history[history.length - 1];
+
+  function handlePlay(nextSquares) {
+    setHistory([...history, nextSquares]);
+    setXIsNext(!xIsNext);
+  }
+
+  return (
+    <div className="game">
+      <div className="game-board">
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div className="game-info">
+        <ol>{/*TODO*/}</ol>
+      </div>
+    </div>
+  )
 }
