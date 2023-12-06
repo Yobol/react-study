@@ -6,11 +6,11 @@ import { useState } from 'react';
 
 // In React, a component is a piece of reusable code that represents a part of a user interface.
 // the Square component can be passed a prop called value.
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick, highlight }) {
     // To “escape into JavaScript” from JSX, we need curly braces `{}` to wrapper the prop.
     return (
       <button 
-        className="square"
+        className={highlight ? " square-highlight": "square"}
         onClick={onSquareClick}
       >
         {value}
@@ -18,7 +18,7 @@ function Square({ value, onSquareClick }) {
     )
 }
 
-function Board({ xIsNext, squares, onPlay }) {
+function Board({ xIsNext, move, squares, onPlay }) {
   function handleSquareClick(i) {
     if (calculateWinner(squares) || squares[i]) {
       return;
@@ -36,12 +36,14 @@ function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
   if (winner) {
-    status = "Winner: " + winner;
+    status = "Winner: " + winner.winner;
+  } else if (move === 9) {
+    status = "Draw!"
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
   }
 
-  const renderSquare = (i) => {
+  const renderSquare = (i, highlight) => {
     /*
       Can't directly use '<Square value={squares[0]} onSquareClick={handleSquareClick(0)} />'.
       Because the 'handleSquareClick(0)' alters the state of the Board components by calling 'setSquares'.
@@ -52,14 +54,16 @@ function Board({ xIsNext, squares, onPlay }) {
         onSquareClick={handleSquareClick} doesn't call the function.
         onSquareClick={handleSquareClick(0)} will call the function right now.
     */
-    return <Square value={squares[i]} onSquareClick={() => handleSquareClick(i)} />
+    return <Square value={squares[i]} onSquareClick={() => handleSquareClick(i)} highlight={highlight}/>
   }
 
   let boardRows = [];
   for (let i = 0; i < 3; i++) {
     let squaresInRow = [];
     for (let j = 0; j < 3; j++) {
-      squaresInRow.push(renderSquare(i * 3 + j));
+      let k = i * 3 + j;
+      let highlight = winner ? winner.line.includes(k) : false;
+      squaresInRow.push(renderSquare(k, highlight));
     }
     boardRows.push(<div className='borad-row'>{squaresInRow}</div>)
   }
@@ -90,7 +94,10 @@ function calculateWinner(squares) {
   for (let line of lines) {
     const [a, b, c] = line;
     if (squares[a] && squares[a] == squares[b] && squares[a] == squares[c]) {
-      return squares[a];
+      return {
+        winner: squares[a],
+        line: line,
+      };
     }
   }
   return null;
@@ -165,10 +172,10 @@ export default function Game() {
   return (
     <div className="game">
       <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+        <Board xIsNext={xIsNext} move={currentMove} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        <button onClick={toggleSortingMoves}>Toggle Sorting Moves</button>
+        <button onClick={toggleSortingMoves}>Toggle Sorting</button>
         <ol>
           { ascending ? moves : moves.slice().reverse() }
         </ol>
