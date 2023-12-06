@@ -85,7 +85,7 @@ function calculateWinner(squares) {
     [0, 3, 6],
     [1, 4, 7],
     [2, 5, 8],
-    [0, 4, 5],
+    [0, 4, 8],
     [2, 4, 6],
   ]
   for (let line of lines) {
@@ -138,6 +138,14 @@ export default function Game() {
     } else {
       description = 'Go to game start';
     }
+
+    if (move == currentMove) {
+      description = 'You are at move #' + move;
+      return (
+        <li key={move}>{description}</li>
+      )
+    }
+
     return (
       // Keys tell React about the identity of each component, which allows React to maintain state between re-renders.
       // If a component’s key changes, the component will be destroyed and re-created with a new state.
