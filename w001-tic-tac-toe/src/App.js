@@ -100,8 +100,6 @@ function calculateWinner(squares) {
 // The default is a JavaScript keyword tells other files using your code that it's the main function in your file.
 // So we can using <App /> to replace <Game />.
 export default function Game() {
-  const [xIsNext, setXIsNext] = useState(true);
-
   // Using immutability's serveral benefits:
   // 1. implement easily undo & redo actions to keep previous versions of the data intact, and reuse them later;
   // 2. makes it very cheap for components to compare whether their data has changed or not
@@ -113,6 +111,9 @@ export default function Game() {
   // Besides, state is private to a component that defines it. So we cannot update the Board’s state directly from Square.
   const [history, setHistory] = useState([Array(9).fill(null)]);
   const [currentMove, setCurrentMove] = useState(0);
+  // There’s no reason for you to store both of these in state. In fact, always try to avoid redundant state.
+  // Simplifying what you store in state reduces bugs and makes your code easier to understand.
+  const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
   function handlePlay(nextSquares) {
@@ -122,12 +123,10 @@ export default function Game() {
     // its child components (the Square components that make up the board).
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
-    setXIsNext(!xIsNext);
   }
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
-    setXIsNext(nextMove % 2 === 0);
   }
 
   // In JavaScript, to transform one array into another, you can use the array map method:
