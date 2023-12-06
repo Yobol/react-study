@@ -99,6 +99,8 @@ function calculateWinner(squares) {
 // The default is a JavaScript keyword tells other files using your code that it's the main function in your file.
 // So we can using <App /> to replace <Game />.
 export default function Game() {
+  const [ascending, setAscending] = useState(true);
+
   // Using immutability's serveral benefits:
   // 1. implement easily undo & redo actions to keep previous versions of the data intact, and reuse them later;
   // 2. makes it very cheap for components to compare whether their data has changed or not
@@ -126,6 +128,11 @@ export default function Game() {
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
+  }
+
+  function toggleSortingMoves() {
+    setAscending(!ascending);
+    console.log(ascending);
   }
 
   // In JavaScript, to transform one array into another, you can use the array map method:
@@ -161,7 +168,10 @@ export default function Game() {
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
       <div className="game-info">
-        <ol>{moves}</ol>
+        <button onClick={toggleSortingMoves}>Toggle Sorting Moves</button>
+        <ol>
+          { ascending ? moves : moves.slice().reverse() }
+        </ol>
       </div>
     </div>
   )
