@@ -16,5 +16,6 @@
   "scripts": {
     "build:w001-tic-tac-toe": "yarn workspace w001-tic-tac-toe run build",
     "start:w001-tic-tac-toe": "yarn workspace w001-tic-tac-toe run start"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha1.ac34549e6aa8e7ead463a7407e1c7390f61a6610"
 }
