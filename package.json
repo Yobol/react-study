@@ -11,10 +11,13 @@
     "url": "https://github.com/yobol/react-study"
   },
   "workspaces": [
-    "w001-tic-tac-toe"
+    "w001-tic-tac-toe",
+    "w002-create-react-app"
   ],
   "scripts": {
     "build:w001-tic-tac-toe": "yarn workspace w001-tic-tac-toe run build",
-    "start:w001-tic-tac-toe": "yarn workspace w001-tic-tac-toe run start"
+    "start:w001-tic-tac-toe": "yarn workspace w001-tic-tac-toe run start",
+    "build:w002-create-react-app": "yarn workspace w002-create-react-app run build",
+    "start:w002-create-react-app": "yarn workspace w002-create-react-app run start"
   }
 }
